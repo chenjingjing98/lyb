@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>留言板</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .box {
+        width: 100%;
+        /* height: 2000px; */
+        /* background: #f7f5f5; */
+        margin: auto;
+      }
+      .main {
+        width: 70%;
+        /* height: 2000px; */
+        background-color: white;
+        margin: auto;
+      }
+      .head {
+        width: 100%;
+        height: 30px;
+        border-bottom: 2px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .center {
+        width: 80%;
+        margin: 20px auto;
+      }
+      .center input {
+        width: 99%;
+        height: 50px;
+        font-size: 20px;
+        margin: 5px auto;
+      }
+      .center button {
+        width: 100px;
+        height: 40px;
+        font-size: 20px;
+        background: aliceblue;
+        border: 1px solid aliceblue;
+        margin: 20px 0px 20px 0px;
+      }
+      .foot {
+        width: 80%;
+        padding-bottom: 200px;
+        margin: 20px auto;
+        background-color: antiquewhite;
+      }
+      .foot ul li {
+        width: 100%;
+        height: 150px;
+        border-bottom: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+
+      .foot ul li span {
+        display: block;
+
+        height: 30px;
+      }
+      .btnbox {
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .btn {
+        width: 40px;
+      }
+      .xiugaibox {
+        position: absolute;
+        top: 200px;
+        left: 30%;
+        width: 653px;
+        height: 250px;
+        background-color: rgba(255, 192, 203, 0.303);
+        display: none;
+      }
+      .put {
+        width: 98%;
+        font-size: 20px;
+
+        height: 30px;
+      }
+      .xiugaibox pre button {
+        height: 30px;
+        width: 100px;
+        background-color: white;
+        border: none;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="main">
+        <div class="xiugaibox">
+          <pre>
+
+<input type="text" placeholder="请修改内容" class="put" id="gaicen">
+
+<input type="text" placeholder="请修改留言人姓名" class="put" id="gainame"> 
+
+
+
+                                     <button onclick="okList()">确认修改</button>  <button onclick="off()">取消</button>
+            </pre>
+        </div>
+        <div class="head">
+          <h3>留言板</h3>
+        </div>
+        <div class="center">
+          <input type="text" placeholder="请写下留言内容" id="cent" />
+          <input type="text" id="manes" placeholder="请写下留言人姓名" />
+          <select name="" id="">
+            <option value="1">男</option>
+            <option value="2">女</option>
+          </select>
+          <button id="publish">发表</button>
+        </div>
+        <!-- 留言内容 -->
+        <div class="foot"></div>
+      </div>
+    </div>
+    <script>
+      let publish = document.querySelector("#publish");
+      let xiugaibox = document.querySelector(".xiugaibox");
+      let foot = document.querySelector(".foot");
+      let arr = [];
+      let color = "";
+      showList();
+      function showList() {
+        str = "";
+        arr.forEach((item, index) => {
+          str += `
+                   <ul>
+                       <li style="background:${item.back}">
+                        <p>${item.centent}</p>
+                        <div class='btnbox' >
+                            <span>留言人:${item.name}</span>
+                           
+                            <div class='btns'>
+                        <button class='btn' dingyi='${index}' name='gai' >修改</button>
+                        <button class='btn' dingyi='${index}' name='del'>删除</button>
+                       
+                        </div >
+                            </div>
+                       
+                        </li>
+                        
+                    </ul>
+                   
+                   `;
+        });
+        foot.innerHTML = str;
+      }
+      let xiuIndex = null;
+      //新增
+      publish.onclick = function () {
+        let btnbox = document.querySelector(".btnbox");
+
+        let manes = document.getElementById("manes");
+        let sex = document.getElementById("sex");
+        let cent = document.getElementById("cent");
+        let sexIndex = document.querySelector("select").value;
+        console.log( sexIndex);
+        if (sexIndex === '1') {
+            console.log(123);
+          color = "skyblue";
+        } else {
+            console.log(456);
+          color = "pink";
+        }
+        showList();
+        let boj = {
+          centent: cent.value,
+          name: manes.value,
+          back:color
+        };
+        console.log(arr);
+        arr.unshift(boj);
+        showList();
+      };
+      //删除 事件委托
+      foot.onclick = function () {
+        let index = event.target.getAttribute("dingyi");
+        let names = event.target.getAttribute("name");
+        if (names === "del") {
+          if (confirm("确认删除吗???")) {
+            arr.splice(index, 1);
+            showList();
+            alert("已删除");
+          }
+        } else if (names === "gai") {
+          xiugaibox.style.display = "block";
+          xiuIndex = event.target.getAttribute("dingyi");
+        }
+      };
+
+      //确认修改
+      function okList() {
+            
+        let gaicen = document.getElementById("gaicen").value;
+        let gainame = document.getElementById("gainame").value;
+        arr[xiuIndex] = {
+          centent: gaicen,
+          name: gainame,
+          
+        };
+        showList();
+        console.log(arr);
+      }
+      //取消
+      function off() {
+        xiugaibox.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
